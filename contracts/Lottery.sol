@@ -5,6 +5,7 @@ pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 
+
 contract Lottery is VRFConsumerBase {
 
   
@@ -12,8 +13,9 @@ contract Lottery is VRFConsumerBase {
    address payable winner;
    address public owner;
    bytes32 internal keyHash;
-    uint256 internal fee;
-    uint256 public randomResult;
+   uint256 internal fee;
+   uint256 public randomResult;
+    
   
    //events
   event PaidWinner(address from, address _winner);
@@ -27,9 +29,16 @@ contract Lottery is VRFConsumerBase {
         keyHash = 0x2ed0feb3e7fd2022120aa84fab1945545a9f2ffc9076fd6156fa96eaff4c1311; //rinkeby
         fee = 0.1 * 10 ** 18; // 0.1 LINK (Varies by network)
     }
+
+    function vrfRequest() public returns (bytes32 requestId){
+      require(LINK.balanceOf(address(this)) >= fee,"Need more LINK");
+      return requestRandomness(keyHash, fee); 
+   
+    }
   
  function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
     randomResult = (randomness % 100) + 1;
+      
 }
 
    function enterLottery() public payable {
