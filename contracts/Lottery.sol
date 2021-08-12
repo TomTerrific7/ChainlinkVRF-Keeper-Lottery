@@ -9,7 +9,7 @@ import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 contract Lottery is VRFConsumerBase {
 
   
-   mapping(address => uint) paymentRecieved;
+   mapping(address => bool) public eligiblePlayer;
    address payable winner;
    address public owner;
    bytes32 internal keyHash;
@@ -41,15 +41,12 @@ contract Lottery is VRFConsumerBase {
       
 }
 
-   function enterLottery() public payable {
+   function enterLottery(address _player) external payable{
      require (msg.value == 1); 
-     revert();
-    
-       }
+     eligiblePlayer[_player] = true;
 
-    function provideTicket() public {
+      }
 
-    }
 
        function chooseWinner() public  {
          
