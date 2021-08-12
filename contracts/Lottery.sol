@@ -19,6 +19,7 @@ contract Lottery is VRFConsumerBase {
   
    //events
   event PaidWinner(address from, address _winner);
+  event newPlayer(address _player);
   
   
   constructor () VRFConsumerBase(
@@ -44,6 +45,8 @@ contract Lottery is VRFConsumerBase {
    function enterLottery(address _player) external payable{
      require (msg.value == 1); 
      eligiblePlayer[_player] = true;
+     //TODO: need to provide player w/ a lottery ticket
+     emit newPlayer(_player);
 
       }
 

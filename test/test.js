@@ -15,6 +15,8 @@ describe("Lottery", function () {
       const [owner] = await ethers.getSigners(); 
     });
 
+    await Lottery.vrfRequest();
+
   
     
 });
