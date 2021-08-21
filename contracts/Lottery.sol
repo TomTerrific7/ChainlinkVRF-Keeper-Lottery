@@ -8,18 +8,26 @@ import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 
 contract Lottery is VRFConsumerBase {
 
-  
+  enum LotteryState {Open, Closed, Complete}
+   
    mapping(address => bool) public eligiblePlayer;
+   LotteryState public state;
    address payable winner;
    address public owner;
    bytes32 internal keyHash;
-   uint256 internal fee;
-   uint256 public randomResult;
+   uint internal fee;
+   uint public randomResult;
+   uint public lotteryID;
     
   
    //events
   event PaidWinner(address from, address _winner);
   event newPlayer(address _player);
+
+  modifier isState(LotteryState _state) {
+		require(state == _state, "Wrong state");
+		_;
+  }
   
   
   constructor () VRFConsumerBase(
@@ -29,31 +37,33 @@ contract Lottery is VRFConsumerBase {
     {
         keyHash = 0x2ed0feb3e7fd2022120aa84fab1945545a9f2ffc9076fd6156fa96eaff4c1311; //rinkeby
         fee = 0.1 * 10 ** 18; // 0.1 LINK (Varies by network)
+        lotteryID = 1;
     }
 
-    function vrfRequest() public returns (bytes32 requestId){
+    function getRansomNumber() public returns (bytes32 requestId){
       require(LINK.balanceOf(address(this)) >= fee,"Need more LINK");
       return requestRandomness(keyHash, fee); 
-   
+      
     }
   
- function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
+ function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {  
     randomResult = (randomness % 100) + 1;
-      
+    
 }
+  function startNewLottery(uint256 duration) public {
+    require(state == LotteryState.Closed);
+    state = LotteryState.Open;
+    lotteryID += 1;
+    
+  }
 
-   function enterLottery(address _player) external payable{
+   function enterLottery(address) external payable isState(LotteryState.Open) {
      require (msg.value == 1); 
-     eligiblePlayer[_player] = true;
-     //TODO: need to provide player w/ a lottery ticket
-     emit newPlayer(_player);
+     eligiblePlayer[msg.sender] = true;
+     emit newPlayer(msg.sender);
 
       }
 
-
-       function chooseWinner() public  {
-         
-       }
 
        function payWinner(address payable _winner) public {
            winner = _winner;
