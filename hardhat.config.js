@@ -26,7 +26,7 @@ module.exports = {
       chainId: 1337
     },
     ropsten: {
-      url: "",
+      url: [process.env.ROPSTEN_URL],
       accounts: [process.env.PRIVATE_KEY]
     }
   }
