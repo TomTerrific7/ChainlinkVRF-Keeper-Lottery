@@ -25,8 +25,8 @@ module.exports = {
     hardhat: {
       chainId: 1337
     },
-    ropsten: {
-      url: [process.env.ROPSTEN_URL],
+    rinkeby: {
+      url: [process.env.RINKEBY_URL],
       accounts: [process.env.PRIVATE_KEY]
     }
   }
