@@ -8,7 +8,7 @@ import "@chainlink/contracts/src/v0.8/VRFConsumerBase.sol";
 
 contract Lottery is VRFConsumerBase {
 
-  enum LotteryState {Open, Closed, Complete}
+  enum LotteryState {Open, Closed, Calculating}
    
    
    LotteryState public state;
@@ -18,7 +18,7 @@ contract Lottery is VRFConsumerBase {
    uint public randomResult;
    uint public lotteryID;
    address [] public players;
-    
+   uint public winner;
   
    //events
   event PaidWinner(address from, address winner);
@@ -36,21 +36,30 @@ contract Lottery is VRFConsumerBase {
         keyHash = 0x2ed0feb3e7fd2022120aa84fab1945545a9f2ffc9076fd6156fa96eaff4c1311; //rinkeby
         fee = 0.1 * 10 ** 18; // 0.1 LINK (Varies by network)
         lotteryID = 1;
+        owner = msg.sender;
     }
 
   function getRandomNumber() public returns (bytes32 requestId){
-    require(LINK.balanceOf(address(this)) >= fee,"Need more LINK");
+    require(LINK.balanceOf(owner) >= fee,"Need more LINK");
     return requestRandomness(keyHash, fee);
     
     }
   
  function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {  
+     state = LotteryState.Calculating;
     randomResult = (randomness % players.length) + 1;
-    uint winner = randomResult;
+    winner = randomResult;
+    }
+    
+function payWinner() public {
+    require(state == LotteryState.Calculating);
     payable(players[winner]).transfer(address(this).balance);
     emit PaidWinner(address(this), players[winner]);
+    delete players;
+    state= LotteryState.Closed;
+    
+}
 
-    }
   function startNewLottery(uint256 duration) public {
     require(state == LotteryState.Closed);
     state = LotteryState.Open;
@@ -60,7 +69,7 @@ contract Lottery is VRFConsumerBase {
     }
 
    function enterLottery() external payable isState(LotteryState.Open) {
-     require (msg.value == .01 ether); 
+     require (msg.value == 1 ether); 
      players.push(msg.sender);
      emit newPlayer(msg.sender);
 
@@ -74,3 +83,4 @@ contract Lottery is VRFConsumerBase {
         }
 
 }
+
