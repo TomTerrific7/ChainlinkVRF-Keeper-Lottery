@@ -60,10 +60,9 @@ function payWinner() public {
     
 }
 
-  function startNewLottery(uint256 duration) public {
+  function startNewLottery() public {
     require(state == LotteryState.Closed);
     state = LotteryState.Open;
-    duration = 3 days;
     lotteryID += 1;
 
     }
@@ -83,4 +82,3 @@ function payWinner() public {
         }
 
 }
-
