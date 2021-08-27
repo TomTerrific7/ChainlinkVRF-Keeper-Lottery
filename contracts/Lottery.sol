@@ -10,7 +10,6 @@ contract Lottery is VRFConsumerBase {
 
   enum LotteryState {Open, Closed, Calculating}
    
-   
    LotteryState public state;
    address public owner;
    bytes32 internal keyHash;

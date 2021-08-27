@@ -9,15 +9,12 @@ describe("Lottery", function () {
     await test.deployed();  
   });
 
-  describe("Owner", function () {
-    
-    it("Should set the right owner", async function () {
-      const [owner] = await ethers.getSigners(); 
-    });
 
-    await Lottery.vrfRequest();
+});
 
-  
-    
-});
-});
+describe('entering lottery', function () {
+  const oneEther = ethers.utils.parseEther("1");
+  beforeEach(async () => {
+      await ethers.provider.getSigner(0).sendTransaction({ to: contract.address, value: oneEther });
+  });
+  });
