@@ -2,6 +2,8 @@
 const { assert } = require("chai");
 const { ethers } = require("hardhat");
 
+
+
 describe("Lottery", function () {
   it("Should deploy contract", async function () {
     const Lottery = await ethers.getContractFactory("Lottery");

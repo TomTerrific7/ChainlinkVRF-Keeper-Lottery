@@ -67,7 +67,7 @@ function payWinner() public {
     }
 
    function enterLottery() external payable isState(LotteryState.Open) {
-     require (msg.value == 1 ether); 
+     require (msg.value == 1 wei); 
      players.push(msg.sender);
      emit newPlayer(msg.sender);
 
@@ -81,3 +81,4 @@ function payWinner() public {
         }
 
 }
+

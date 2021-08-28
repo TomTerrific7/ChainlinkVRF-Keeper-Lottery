@@ -21,14 +21,12 @@ module.exports = {
   paths: {
     artifacts: './src/artifacts',
   },
-  networks: {
-    hardhat: {
-    },
-    rinkeby: {
-      url: [process.env.RINKEBY_URL],
-      accounts: [process.env.PRIVATE_KEY]
+  hardhat: {
+    forking: {
+      url: "https://eth-rinkeby.alchemyapi.io/v2/vwkvf8jDo0oGKz7UD539gUMcukPSrmDr",
+      blockNumber: 9196162
     }
-  
   }
+
 };
 
