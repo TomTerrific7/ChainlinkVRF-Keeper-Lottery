@@ -6,8 +6,6 @@
 const hre = require("hardhat");
 
 
-
-
 async function main() {
 
   const Lottery = await hre.ethers.getContractFactory("Lottery");

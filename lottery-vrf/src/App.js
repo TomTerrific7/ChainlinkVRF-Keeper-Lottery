@@ -1,7 +1,5 @@
 import logo from './logo.svg';
 import './App.css';
-import {ethers} from 'ethers';
-import Lottery from './artifacts/contracts/Lottery.sol/Lottery.json'
 
 function App() {
   return (

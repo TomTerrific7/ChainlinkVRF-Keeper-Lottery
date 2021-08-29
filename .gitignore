@@ -1,7 +1,0 @@
-!.gitignore
-node_modules
-.env
-/.env
-#Hardhat files
-cache
-artifacts
