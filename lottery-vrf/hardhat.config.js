@@ -21,11 +21,14 @@ module.exports = {
   paths: {
     artifacts: './src/artifacts',
   },
-  hardhat: {
-    forking: {
-      url: "https://eth-rinkeby.alchemyapi.io/v2/vwkvf8jDo0oGKz7UD539gUMcukPSrmDr",
-      blockNumber: 9196162
+  networks: {
+    hardhat: {
+      chainId: 1337
+    },
+    rinkeby: {
+      url: "https://rinkeby.infura.io/v3/310c4c6ad23941cba0388859c3d2411f",
+      accounts: [process.env.PRIVATE_KEY]
+    
     }
   }
-
 };

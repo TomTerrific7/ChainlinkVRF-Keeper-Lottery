@@ -38,6 +38,14 @@ contract Lottery is VRFConsumerBase {
         owner = msg.sender;
     }
 
+
+   function enterLottery() external payable isState(LotteryState.Open) {
+     require (msg.value == 1 wei); 
+     players.push(msg.sender);
+     emit newPlayer(msg.sender);
+
+    }
+
   function getRandomNumber() public returns (bytes32 requestId){
     require(LINK.balanceOf(owner) >= fee,"Need more LINK");
     return requestRandomness(keyHash, fee);
@@ -66,12 +74,6 @@ function payWinner() public {
 
     }
 
-   function enterLottery() external payable isState(LotteryState.Open) {
-     require (msg.value == 1 wei); 
-     players.push(msg.sender);
-     emit newPlayer(msg.sender);
-
-    }
    function getBalance() public view returns (uint) {
      return address(this).balance;
 
