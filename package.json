@@ -6,10 +6,38 @@
     "chai": "^4.3.4",
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.4.6",
-    "hardhat": "^2.6.2"
+    "hardhat": "^2.6.2",
+    "sass": "^1.39.0"
   },
   "dependencies": {
     "@chainlink/contracts": "^0.2.1",
-    "dotenv": "^10.0.0"
-  }
+    "@portis/web3": "^4.0.5",
+    "dotenv": "^10.0.0",
+    "front-end": "^0.2.9",
+    "web3": "^1.5.2",
+    "web3modal": "^1.9.4"
+  },
+  "browserslist": [
+    "> 5%"
+  ],
+  "description": "This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.",
+  "version": "1.0.0",
+  "main": "hardhat.config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TomTerrific7/ChainlinkVRF-Lottery.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TomTerrific7/ChainlinkVRF-Lottery/issues"
+  },
+  "homepage": "https://github.com/TomTerrific7/ChainlinkVRF-Lottery#readme"
 }
