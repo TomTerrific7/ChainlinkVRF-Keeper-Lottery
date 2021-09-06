@@ -11,13 +11,13 @@ const providerOptions = {
   walletconnect: {
     package: WalletConnectProvider, // required
     options: {
-      infuraId: "INFURA_ID" // required
+      infuraId: "https://rinkeby.infura.io/v3/310c4c6ad23941cba0388859c3d2411f" // required
     }
   },
   fortmatic: {
     package: Fortmatic, // required
     options: {
-      key: "FORTMATIC_KEY" // required
+      key: "pk_test_EBC181430C93A5B6" // required
     }
   }
 };
