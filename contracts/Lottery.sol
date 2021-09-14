@@ -39,9 +39,8 @@ contract Lottery is VRFConsumerBase {
     }
 
 
-   function enterLottery(uint amount) external payable isState(LotteryState.Open) {
-     amount = 1 wei;
-     require (msg.value == amount); 
+   function enterLottery() external payable isState(LotteryState.Open) {
+     require (msg.value == 1 wei); 
      players.push(msg.sender);
      emit newPlayer(msg.sender);
 
@@ -55,7 +54,7 @@ contract Lottery is VRFConsumerBase {
   
  function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {  
      state = LotteryState.Calculating;
-    randomResult = (randomness % players.length) + 1;
+    randomResult = (randomness % players.length);
     winner = randomResult;
     }
     
