@@ -1,21 +1,60 @@
-#account {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin: 20px;
-    padding: 10px 20px;
-    background-color: #eee;
-    display: inline-flex;
-    flex-direction: column;
-  
-    .logout {
-      border-radius: 5px;
-      background-color: #2b2be4;
-      color: white;
-      padding: 10px 15px;
-      margin: 10px auto;
-      display: inline-block;
-      text-transform: uppercase;
-      font-size: .8em;
-      cursor: pointer;
-    }
-  }
+*{
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  margin: 0px;
+  padding: 0;
+  text-decoration: none;
+  box-sizing: border-box;
+
+}
+body{
+  min-height: 100vh;
+  background: linear-gradient(to right top, #a1a1a1, #84b4d7, #00d1e3, #00e7a2, #a8eb12)
+}
+
+form{
+  background: #989898ce;
+  width: 350px;
+  height: 580px;
+  padding: 75px 50px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+h1{
+  text-align: center;
+  margin-bottom: 45px;
+  color: white;
+  font-size: 40px;
+}
+
+.textBoxdiv{
+  border-bottom: 2px solid white;
+  position: relative;
+  margin: 35px 0;
+}
+
+.textBoxdiv input{
+  background: none;
+  border: none;
+  outline: none;
+  width: 100%;
+  color:none;
+  height: 30px;
+  font-size: 20px;
+}
+.enterBtn{
+height: 45px;
+width: 100%;
+border: none;
+outline: none;
+background: linear-gradient(to right top, #a1a1a1, #84b4d7, #00d1e3, #00e7a2, #a8eb12);
+background-size: 200%;
+color: white;
+font-size: 16px;
+}
+
+.enterBtn:hover{
+  background-position: right;
+  font-size: 17px;
+}
