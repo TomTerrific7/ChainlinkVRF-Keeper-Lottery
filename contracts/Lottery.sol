@@ -25,7 +25,10 @@ contract Lottery is VRFConsumerBase, KeeperCompatibleInterface {
    //events
   event PaidWinner(address from, address winner);
   event newPlayer(address _player);
-
+  event RequestNumber(bytes32 indexed requestId);
+  event RequestFulFilled(bytes32 indexed requestId, uint256 indexed result);
+  event NewUpkeep(bytes indexed performData);
+  
   modifier isState(LotteryState _state) {
 		require(state == _state, "Wrong state");
 		_;
@@ -38,7 +41,6 @@ contract Lottery is VRFConsumerBase, KeeperCompatibleInterface {
         keyHash = 0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4; //rinkeby
         fee = 0.1 * 10 ** 18; // 0.1 LINK (Varies by network)
         owner = msg.sender;
-       interval  = 30 seconds;
        lotteryID = 1;
        previousID = 0;
 
@@ -51,18 +53,23 @@ contract Lottery is VRFConsumerBase, KeeperCompatibleInterface {
       
       upkeepNeeded = (lotteryID - 1) == previousID;
         performData = checkData;
+        emit NewUpkeep(performData);
   }
 
   function performUpkeep(bytes calldata /* performData */) external override {
-      startNewLottery();
+      startNewLottery();  
+      duration();
+          
       
-         
-     
   }  
 
   function getRandomNumber() public returns (bytes32 requestId){
+    require(state == LotteryState.Open);
     require(LINK.balanceOf(owner) >= fee,"Need more LINK");
+    state = LotteryState.Calculating;
+    emit RequestNumber(requestId);
     return requestRandomness(keyHash, fee);
+    
     
     }
   
@@ -70,6 +77,14 @@ contract Lottery is VRFConsumerBase, KeeperCompatibleInterface {
      state = LotteryState.Calculating;
     randomResult = (randomness % players.length);
     winner = randomResult;
+    emit RequestFulFilled(requestId, randomResult);
+    }
+    
+    function duration() public {
+        require(state == LotteryState.Open);
+        require(block.timestamp - lastLottery > 30 seconds, 'Need to wait 5 minutes');
+        getRandomNumber();
+        lastLottery = block.timestamp;
     }
     
     function startNewLottery() public {
@@ -77,8 +92,8 @@ contract Lottery is VRFConsumerBase, KeeperCompatibleInterface {
       state = LotteryState.Open;
       lotteryID += 1;
       
-  
-      }
+    }
+    
     function enterLottery() external payable isState(LotteryState.Open) {
       require (msg.value == 1 wei); 
       players.push(msg.sender);
@@ -101,5 +116,3 @@ contract Lottery is VRFConsumerBase, KeeperCompatibleInterface {
         receive() external payable {
 
         }
-
-}
