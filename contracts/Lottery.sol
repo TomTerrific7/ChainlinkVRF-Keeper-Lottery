@@ -16,12 +16,12 @@ contract Lottery is VRFConsumerBase, KeeperCompatibleInterface {
    bytes32 internal keyHash;
    uint internal fee;
    uint public randomResult;
-   uint public lotteryID;
+   uint  public lotteryID;
    address [] public players;
    uint public winner;
-  uint public immutable lotteryInterval;
- 
-  
+  uint public immutable interval;
+  uint public previousID;
+  uint public lastLottery;
    //events
   event PaidWinner(address from, address winner);
   event newPlayer(address _player);
@@ -31,44 +31,32 @@ contract Lottery is VRFConsumerBase, KeeperCompatibleInterface {
 		_;
   } 
   constructor () VRFConsumerBase(
-            0xb3dCcb4Cf7a26f6cf6B120Cf5A73875B7BBc655B, // VRF Coordinator rinkeby
-            0x01BE23585060835E02B77ef475b0Cc51aA1e0709  // LINK Token rinkeby
+    0xdD3782915140c8f3b190B5D67eAc6dc5760C46E9, // VRF Coordinator rinkeby
+    0xa36085F69e2889c224210F603D836748e7dC0088  // LINK Token rinkeby
         ) 
     {
-        keyHash = 0x2ed0feb3e7fd2022120aa84fab1945545a9f2ffc9076fd6156fa96eaff4c1311; //rinkeby
+        keyHash = 0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4; //rinkeby
         fee = 0.1 * 10 ** 18; // 0.1 LINK (Varies by network)
-        lotteryID = 0;
         owner = msg.sender;
-       lotteryInterval  = 5 minutes;
+       interval  = 30 seconds;
+       lotteryID = 1;
+       previousID = 0;
 
         
     }
 
 
    
-    function checkUpkeep(bytes calldata) external override returns (bool upkeepNeeded, bytes memory) {
+    function checkUpkeep(bytes calldata checkData) external override returns (bool upkeepNeeded, bytes memory performData)  {
       
-      if(state == LotteryState.Closed){
-        upkeepNeeded == true;
-      }
-      
+      upkeepNeeded = (lotteryID - 1) == previousID;
+        performData = checkData;
   }
 
   function performUpkeep(bytes calldata /* performData */) external override {
       startNewLottery();
-      require(lotteryInterval >= 5 minutes);
-      getRandomNumber();
-      payWinner();
       
-      //Should start the lottery
-      //should choose a winner
-      //should play winner
-      //Should should end the lottery
-      //should start new lottery
-   
-    
-
-    
+         
      
   }  
 
@@ -83,6 +71,7 @@ contract Lottery is VRFConsumerBase, KeeperCompatibleInterface {
     randomResult = (randomness % players.length);
     winner = randomResult;
     }
+    
     function startNewLottery() public {
       require(state == LotteryState.Closed);
       state = LotteryState.Open;
@@ -102,7 +91,7 @@ contract Lottery is VRFConsumerBase, KeeperCompatibleInterface {
       emit PaidWinner(address(this), players[winner]);
       delete players;
       state= LotteryState.Closed;
-    
+      previousID +=1;
 }
 
    function getBalance() public view returns (uint) {
