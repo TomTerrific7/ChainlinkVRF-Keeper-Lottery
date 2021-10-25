@@ -22,11 +22,12 @@ contract Lottery is VRFConsumerBase, KeeperCompatibleInterface {
   uint public previousID;
   uint public lastLottery;
   uint startTime;
+
    //events
   event PaidWinner(address from, address winner);
   event newPlayer(address _player);
   event RequestNumber(bytes32 indexed requestId);
- 
+ event newLotteryStarted(uint lotteryID);
  
 
   modifier isState(LotteryState _state) {
@@ -43,15 +44,12 @@ contract Lottery is VRFConsumerBase, KeeperCompatibleInterface {
         keyHash = 0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4; //rinkeby
         fee = 0.1 * 10 ** 18; // 0.1 LINK (Varies by network)
         owner = msg.sender;
-       lotteryID = 1;
-       previousID = 0;
-       startTime = block.timestamp;
+        lotteryID = 1;
+        previousID = 0;
+       
 
         
     }
-
-
-   
     function checkUpkeep(bytes calldata checkData) external override returns (bool upkeepNeeded, bytes memory performData)  {
       
       upkeepNeeded = (lotteryID - 1) == previousID || (block.timestamp >= startTime + 240 seconds && state == LotteryState.Open);
@@ -63,10 +61,8 @@ contract Lottery is VRFConsumerBase, KeeperCompatibleInterface {
           startNewLottery();
       } else if(state == LotteryState.Open) {
           getRandomNumber();
-      }
-      
-          
-      
+      }    
+              
   }  
 
   function getRandomNumber() public returns (bytes32 requestId){
@@ -92,17 +88,15 @@ contract Lottery is VRFConsumerBase, KeeperCompatibleInterface {
   
     }
     
-   
-    
     function startNewLottery() public  {
       require(state == LotteryState.Closed);
       state = LotteryState.Open;
+      startTime = block.timestamp;
       lotteryID += 1;
-      
+      emit newLotteryStarted(lotteryID);
       
     }
-
-    
+  
     function enterLottery() external payable isState(LotteryState.Open) {
       require (msg.value == 1 wei); 
       players.push(msg.sender);
