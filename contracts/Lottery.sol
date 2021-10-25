@@ -98,14 +98,22 @@ contract Lottery is VRFConsumerBase, KeeperCompatibleInterface {
     }
   
     function enterLottery() external payable isState(LotteryState.Open) {
-      require (msg.value == 1 wei); 
+      require (msg.value == .01 ether); 
       players.push(msg.sender);
       emit newPlayer(msg.sender);
  
     }
+
+    function lotteryInfo() public view returns (uint numOfPlayers, uint totalPot, uint currentGameId) {
+      numOfPlayers = players.length;
+      totalPot = address(this).balance;
+      currentGameId = lotteryID;
+
+    }
    
 
    function getBalance() public view returns (uint) {
+     state == LotteryState.Open;
      return address(this).balance;
 
     }
