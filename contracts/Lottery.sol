@@ -19,15 +19,15 @@ contract Lottery is VRFConsumerBase, KeeperCompatibleInterface {
    uint  public lotteryID;
    address [] public players;
    uint public winner;
-  uint public previousID;
-  uint public lastLottery;
-  uint startTime;
+   uint public previousID;
+   uint public lastLottery;
+   uint startTime;
 
    //events
   event PaidWinner(address from, address winner);
   event newPlayer(address _player);
   event RequestNumber(bytes32 indexed requestId);
- event newLotteryStarted(uint lotteryID);
+  event newLotteryStarted(uint lotteryID);
  
 
   modifier isState(LotteryState _state) {
@@ -46,11 +46,10 @@ contract Lottery is VRFConsumerBase, KeeperCompatibleInterface {
         owner = msg.sender;
         lotteryID = 1;
         previousID = 0;
-       
-
         
     }
-    function checkUpkeep(bytes calldata checkData) external override returns (bool upkeepNeeded, bytes memory performData)  {
+  
+  function checkUpkeep(bytes calldata checkData) external override returns (bool upkeepNeeded, bytes memory performData)  {
       
       upkeepNeeded = (lotteryID - 1) == previousID || (block.timestamp >= startTime + 240 seconds && state == LotteryState.Open);
       performData = checkData;
@@ -72,28 +71,26 @@ contract Lottery is VRFConsumerBase, KeeperCompatibleInterface {
     emit RequestNumber(requestId);
     return requestRandomness(keyHash, fee);
     
-    
     }
   
  function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {  
-     state = LotteryState.Calculating;
+    state = LotteryState.Calculating;
     randomResult = (randomness % players.length);
     winner = randomResult;
     payable(players[winner]).transfer(address(this).balance);
-      emit PaidWinner(address(this), players[winner]);
-      delete players;
-      state= LotteryState.Closed;
-      previousID +=1;
+    emit PaidWinner(address(this), players[winner]);
+    delete players;
+    state= LotteryState.Closed;
+    previousID +=1;
     
-  
     }
     
-    function startNewLottery() public  {
-      require(state == LotteryState.Closed);
-      state = LotteryState.Open;
-      startTime = block.timestamp;
-      lotteryID += 1;
-      emit newLotteryStarted(lotteryID);
+  function startNewLottery() public  {
+    require(state == LotteryState.Closed);
+     state = LotteryState.Open;
+     startTime = block.timestamp;
+     lotteryID += 1;
+     emit newLotteryStarted(lotteryID);
       
     }
   
